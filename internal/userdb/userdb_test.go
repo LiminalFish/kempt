@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestInitDatabase(t *testing.T) {
+func TestUserDatabase(t *testing.T) {
 	const dbFile = "user.db"
 	err := os.Remove(dbFile)
 	if err != nil {
@@ -52,7 +52,6 @@ func TestInitDatabase(t *testing.T) {
 	}
 
 	// ------- Testing CreateUser Function -------
-
 	CreateUser("Bobby", 1, "hieo00w0w00w0w0")
 
 	var user_id string
@@ -86,22 +85,88 @@ func TestInitDatabase(t *testing.T) {
 	}
 	t.Logf("Pass: found user ID '%v' from table '%v'.", user_id, table_name)
 
-	// ------- Testing GetTeamid & AssignTeamid Function -------
+	// ------- Testing GetUserName & AssignUserName Functions -------
+	name, err := GetUserName(1)
+	if name != "Bobby" {
+		t.Fatalf("Failed to aquire name of user 1. Expected 'Bobby'. Got: '%v'", name)
+	}
+	t.Logf("Pass: Successfully aquired name of user 1: '%v'", name)
 
-	teamid, err := GetTeamid(1)
+	AssignUserName(1, "Bobbert")
+	name, err = GetUserName(1)
+	if name != "Bobbert" {
+		t.Fatalf("Failed to change name of user 1. Expected 'Bobbert'. Got: '%v'", name)
+	}
+	t.Logf("Pass: Successfully changed name of user 1. Previous: Bobby; New: '%v'", name)
+
+	// ------- Testing GetUserType & AssignUserType Functions -------
+	usertype, err := GetUserType(1)
+	if usertype != 1 {
+		t.Fatalf("Failed to aquire administration level of user 1. Expected '1'. Got: '%v'", usertype)
+	}
+	t.Logf("Pass: Successfully aquired administrator level of user 1: '%v'", usertype)
+
+	AssignUserType(1, 2)
+	usertype, err = GetUserType(1)
+	if usertype != 2 {
+		t.Fatalf("Failed to change administration level of user 1. Expected '2'. Got: '%v'", usertype)
+	}
+	t.Logf("Pass: Successfully changed administration level of user 1. Previous: 1; New: '%v'", usertype)
+
+	// ------- Testing GetUserPoints & AssignUserPoints Functions -------
+	points, err := GetUserPoints(1)
+	if points != 0 {
+		t.Fatalf("Failed to aquire points of user 1. Expected '0'. Got: '%v'", points)
+	}
+	t.Logf("Pass: Successfully aquired points of user 1: '%v'", points)
+
+	AssignUserPoints(1, 5)
+	points, err = GetUserPoints(1)
+	if points != 5 {
+		t.Fatalf("Failed to change points of user 1. Expected '5'. Got: '%v'", points)
+	}
+	t.Logf("Pass: Successfully changed points of user 1. Previous: 0; New: '%v'", points)
+
+	// ------- Testing GetUserRank & AssignUserRank Functions -------
+	rank, err := GetUserRank(1)
+	if rank != -1 {
+		t.Fatalf("Failed to aquire rank of user 1. Expected '-1'. Got: '%v'", rank)
+	}
+	t.Logf("Pass: Successfully aquired rank of user 1: '%v'", rank)
+
+	AssignUserRank(1, 1)
+	rank, err = GetUserRank(1)
+	if rank != 1 {
+		t.Fatalf("Failed to change rank of user 1. Expected '1'. Got: '%v'", rank)
+	}
+	t.Logf("Pass: Successfully changed rank of user 1. Previous: -1; New: '%v'", rank)
+
+	// ------- Testing GetUserToken Function -------
+	token, err := GetUserToken(1)
+	if token != "hieo00w0w00w0w0" {
+		t.Fatalf("Failed to aquire token of user 1. Expected 'hieo00w0w00w0w0'. Got: '%v'", token)
+	}
+	t.Logf("Pass: Successfully aquired token of user 1: '%v'", token)
+
+	// ------- Testing GetTeamid & AssignTeamid Functions -------
+
+	teamid, err := GetUserTeamid(1)
 	if teamid != 0 {
 		t.Errorf("Expected team 0 (unnasigned). Got: '%v'", teamid)
 	}
-	AssignTeamid(1, 1)
-	teamid, err = GetTeamid(1)
+	AssignUserTeamid(1, 1)
+	teamid, err = GetUserTeamid(1)
 	if teamid != 1 {
 		t.Fatalf("Expected team 1. Got: '%v' from user 1", teamid)
 	}
 	t.Logf("Pass: Team successfully updated. Got: '%v' from user 1", teamid)
-	AssignTeamid(3, 1)
-	teamid, err = GetTeamid(3)
+	AssignUserTeamid(3, 1)
+	teamid, err = GetUserTeamid(3)
 	if teamid != 1 {
 		t.Fatalf("Expected team 1. Got: '%v' from user 3", teamid)
 	}
 	t.Logf("Pass: Team successfully updated. Got: '%v' from user 3", teamid)
+
+	// ------- Testing DeleteUser Functions -------
+	DeleteUser(2)
 }
