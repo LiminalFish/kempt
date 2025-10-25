@@ -10,7 +10,7 @@ import (
 // initDB creates the local user database if it DOES NOT already exist.
 // The user database uses the key 'userid' as the primary.
 func InitDatabase() {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func InitDatabase() {
 // Teams, points, rank can be added later.
 // 'userid' is automatically created by database
 func CreateUser(name string, userType int, token string) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -60,7 +60,7 @@ func CreateUser(name string, userType int, token string) {
 }
 
 func DeleteUser(userid int) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -81,7 +81,7 @@ func DeleteUser(userid int) {
 
 // Retrieves name from specified userid
 func GetUserName(userid int) (string, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -103,7 +103,7 @@ func GetUserName(userid int) (string, error) {
 
 // Assign a new name to a specified userid.
 func AssignUserName(userid int, name string) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -125,7 +125,7 @@ func AssignUserName(userid int, name string) {
 
 // Retrieves user's admin level from specified userid
 func GetUserType(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -148,7 +148,7 @@ func GetUserType(userid int) (int, error) {
 
 // Assign a new admin level to a specified userid.
 func AssignUserType(userid int, usertype int) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -170,7 +170,7 @@ func AssignUserType(userid int, usertype int) {
 
 // Retrieves total points from specified userid
 func GetUserPoints(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -192,7 +192,7 @@ func GetUserPoints(userid int) (int, error) {
 
 // Assign a new value of points to a specified userid.
 func AssignUserPoints(userid int, points int) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -214,7 +214,7 @@ func AssignUserPoints(userid int, points int) {
 
 // Retrieves user rank from specified userid
 func GetUserRank(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -236,7 +236,7 @@ func GetUserRank(userid int) (int, error) {
 
 // Assign a new rank to a specified userid.
 func AssignUserRank(userid int, rank int) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -258,7 +258,7 @@ func AssignUserRank(userid int, rank int) {
 
 // Retrieves user API key/token from specified userid
 func GetUserToken(userid int) (string, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -280,7 +280,7 @@ func GetUserToken(userid int) (string, error) {
 
 // Retrieves teamid from specified userid.
 func GetUserTeamid(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
@@ -302,7 +302,7 @@ func GetUserTeamid(userid int) (int, error) {
 
 // Assign a teamid to a specified userid.
 func AssignUserTeamid(userid int, teamid int) {
-	db, err := sql.Open("sqlite3", "./user.db")
+	db, err := sql.Open("sqlite3", "../../data/user.db")
 	if err != nil {
 		log.Fatal(err)
 		db.Close()
