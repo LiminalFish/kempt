@@ -59,8 +59,227 @@ func CreateUser(name string, userType int, token string) {
 	}
 }
 
+func DeleteUser(userid int) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	delete_user_sql := `
+	DELETE FROM users WHERE userid = ?
+	`
+
+	_, err = db.Exec(delete_user_sql, userid)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, delete_user_sql)
+		return
+	}
+}
+
+// Retrieves name from specified userid
+func GetUserName(userid int) (string, error) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return "", err
+	}
+	defer db.Close()
+
+	retrieve_name_sql := `
+	SELECT name FROM users WHERE userid = ?
+	`
+	var name string
+	err = db.QueryRow(retrieve_name_sql, userid).Scan(&name)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, retrieve_name_sql)
+		return "", err
+	}
+	return name, nil
+}
+
+// Assign a new name to a specified userid.
+func AssignUserName(userid int, name string) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_name_sql := `
+	UPDATE users SET name = ?
+	WHERE userid = ?
+	`
+
+	_, err = db.Exec(update_name_sql, name, userid)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, update_name_sql)
+		return
+	}
+}
+
+// Retrieves user's admin level from specified userid
+func GetUserType(userid int) (int, error) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return -1, err
+	}
+	defer db.Close()
+
+	retrieve_type_sql := `
+	SELECT type FROM users WHERE userid = ?
+	`
+
+	var usertype int
+	err = db.QueryRow(retrieve_type_sql, userid).Scan(&usertype)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, retrieve_type_sql)
+		return -1, err
+	}
+	return usertype, nil
+}
+
+// Assign a new admin level to a specified userid.
+func AssignUserType(userid int, usertype int) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_type_sql := `
+	UPDATE users SET type = ?
+	WHERE userid = ?
+	`
+
+	_, err = db.Exec(update_type_sql, usertype, userid)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, update_type_sql)
+		return
+	}
+}
+
+// Retrieves total points from specified userid
+func GetUserPoints(userid int) (int, error) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return -1, err
+	}
+	defer db.Close()
+
+	retrieve_points_sql := `
+	SELECT points FROM users WHERE userid = ?
+	`
+	var points int
+	err = db.QueryRow(retrieve_points_sql, userid).Scan(&points)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, retrieve_points_sql)
+		return -1, err
+	}
+	return points, nil
+}
+
+// Assign a new value of points to a specified userid.
+func AssignUserPoints(userid int, points int) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_points_sql := `
+	UPDATE users SET points = ?
+	WHERE userid = ?
+	`
+
+	_, err = db.Exec(update_points_sql, points, userid)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, update_points_sql)
+		return
+	}
+}
+
+// Retrieves user rank from specified userid
+func GetUserRank(userid int) (int, error) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return -1, err
+	}
+	defer db.Close()
+
+	retrieve_rank_sql := `
+	SELECT rank FROM users WHERE userid = ?
+	`
+	var rank int
+	err = db.QueryRow(retrieve_rank_sql, userid).Scan(&rank)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, retrieve_rank_sql)
+		return -1, err
+	}
+	return rank, nil
+}
+
+// Assign a new rank to a specified userid.
+func AssignUserRank(userid int, rank int) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_rank_sql := `
+	UPDATE users SET rank = ?
+	WHERE userid = ?
+	`
+
+	_, err = db.Exec(update_rank_sql, rank, userid)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, update_rank_sql)
+		return
+	}
+}
+
+// Retrieves user API key/token from specified userid
+func GetUserToken(userid int) (string, error) {
+	db, err := sql.Open("sqlite3", "./user.db")
+	if err != nil {
+		log.Fatal(err)
+		db.Close()
+		return "", err
+	}
+	defer db.Close()
+
+	retrieve_token_sql := `
+	SELECT token FROM users WHERE userid = ?
+	`
+	var token string
+	err = db.QueryRow(retrieve_token_sql, userid).Scan(&token)
+	if err != nil {
+		log.Fatalf("%q: %s\n", err, retrieve_token_sql)
+		return "", err
+	}
+	return token, nil
+}
+
 // Retrieves teamid from specified userid.
-func GetTeamid(userid int) (int, error) {
+func GetUserTeamid(userid int) (int, error) {
 	db, err := sql.Open("sqlite3", "./user.db")
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +301,7 @@ func GetTeamid(userid int) (int, error) {
 }
 
 // Assign a teamid to a specified userid.
-func AssignTeamid(userid int, teamid int) {
+func AssignUserTeamid(userid int, teamid int) {
 	db, err := sql.Open("sqlite3", "./user.db")
 	if err != nil {
 		log.Fatal(err)
