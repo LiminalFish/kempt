@@ -14,6 +14,6 @@ func tasks_edit_ID(c *gin.Context) {
 
 }
 
-func task_edit_ID_delete_ID(c *gin.Context) {
+func tasks_delete_ID(c *gin.Context) {
 
 }

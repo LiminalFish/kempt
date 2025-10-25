@@ -7,6 +7,8 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	"github.com/LiminalFish/kempt/pkg/api"
 )
 
 func main() {
