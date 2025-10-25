@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func start_kempt_API() {
+func StartKemptAPI() {
 	router := gin.Default()
 
 	router.GET("/login", login)
@@ -25,5 +25,5 @@ func start_kempt_API() {
 
 	router.GET("/users/teams/:id", users_teams_ID)
 
-	router.Run("localhost:311911")
+	router.Run(":8081")
 }
