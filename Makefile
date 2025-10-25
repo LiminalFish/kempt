@@ -4,8 +4,5 @@ build:
 run: build
 	./bin/app
 
-build-front:
-	go build cmd/WebFrontRouter -o bin/front
-
-run-front: build-front
-	./bin/front
+run-front:
+	go run ./cmd/webFrontRouter
