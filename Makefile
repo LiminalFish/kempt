@@ -3,3 +3,6 @@ build:
 
 run: build
 	./bin/app
+
+run-front:
+	go run ./cmd/webFrontRouter
