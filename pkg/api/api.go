@@ -1,11 +1,13 @@
 package api
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func StartKemptAPI() {
 	router := gin.Default()
+	router.Use(cors.Default())
 
 	router.GET("/login", login)
 
