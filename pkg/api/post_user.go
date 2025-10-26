@@ -235,3 +235,72 @@ func post_users_ID_team(c *gin.Context) {
 
 	userdb.AssignUserTeamid(targetUser.UserID, changeTeam.NewTeam)
 }
+
+func post_users_create(c *gin.Context) {
+	permLevel := models.ADMIN
+
+	type MiniUser struct {
+		Name  string `json:"name"`
+		Type  int    `json:"type"`
+		Token string `json:"token"`
+	}
+
+	var user MiniUser
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
+	if err := c.BindJSON(&user); err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	userdb.CreateUser(user.Name, user.Type, user.Token)
+}
+
+func post_users_ID_delete(c *gin.Context) {
+
+	permLevel := models.ADMIN
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	userIDInt, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	targetUser := userdb.GetUser(userIDInt)
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
+	userdb.DeleteUser(targetUser.UserID)
+}
