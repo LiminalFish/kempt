@@ -8,7 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DIRECTORY = "../../data/user.db"
+const DIRECTORY = "./data/user.db"
 
 // initDB creates the local user database if it DOES NOT already exist.
 // The user database uses the key 'userid' as the primary.
@@ -327,24 +327,18 @@ func AssignUserTeamid(userid int, teamid int) {
 
 func GetUser(userid int) models.User {
 	user := &models.User{}
-	name, _ := GetUserName(userid)
-	user.Name = name
-	points, _ := GetUserPoints(userid)
-	user.Points = points
-	rank, _ := GetUserRank(userid)
-	user.Rank = rank
-	teamid, _ := GetUserTeamid(userid)
-	user.TeamID = teamid
-	token, _ := GetUserToken(userid)
-	user.Token = token
-	usertype, _ := GetUserType(userid)
-	user.Type = usertype
+	user.Name, _ = GetUserName(userid)
+	user.Points, _ = GetUserPoints(userid)
+	user.Rank, _ = GetUserRank(userid)
+	user.TeamID, _ = GetUserTeamid(userid)
+	user.Token, _ = GetUserToken(userid)
+	user.Type, _ = GetUserType(userid)
 	user.UserID = userid
 
 	return *user
 }
 
-func GetAllUsers() ([]int, error) {
+func GetAllUserIDS() ([]int, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	var users []int
 	if err != nil {

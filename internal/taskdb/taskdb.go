@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/LiminalFish/kempt/pkg/models"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DIRECTORY = "../../data/task.db"
+const DIRECTORY = "./data/task.db"
 
 func InitDatabase() {
 	db, err := sql.Open("sqlite3", DIRECTORY)
@@ -25,7 +27,8 @@ func InitDatabase() {
 		timeframe TEXT DEFAULT "",
 		schedule TEXT DEFAULT "",
 		points INTEGER DEFAULT 0,
-		triggers INTEGER DEFAULT 0
+		triggers INTEGER DEFAULT 0,
+		hidden BOOLEAN DEFAULT 0
 	);
 	`
 
@@ -247,4 +250,184 @@ func AssignTaskTimeframe(taskid int, timeframe string) {
 		log.Printf("%q: %s\n", err, update_timeframe_sql)
 		return
 	}
+}
+
+func GetTaskPoints(taskid int) (int, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return -1, err
+	}
+	defer db.Close()
+
+	retrieve_points_sql := `
+	SELECT points FROM tasks WHERE taskid = ?
+	`
+
+	var points int
+	err = db.QueryRow(retrieve_points_sql, taskid).Scan(&points)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_points_sql)
+		return -1, err
+	}
+	return points, nil
+}
+
+func AssignTaskPoints(taskid int, points int) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_points_sql := `
+	UPDATE tasks SET points = ?
+	WHERE taskid = ?
+	`
+
+	_, err = db.Exec(update_points_sql, points, taskid)
+	if err != nil {
+		log.Printf("%q: %s\n", err, update_points_sql)
+		return
+	}
+}
+
+func GetTaskTriggers(taskid int) (int, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return -1, err
+	}
+	defer db.Close()
+
+	retrieve_triggers_sql := `
+	SELECT triggers FROM tasks WHERE taskid = ?
+	`
+
+	var triggers int
+	err = db.QueryRow(retrieve_triggers_sql, taskid).Scan(&triggers)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_triggers_sql)
+		return -1, err
+	}
+	return triggers, nil
+}
+
+func AssignTaskTriggers(taskid int, triggers int) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_triggers_sql := `
+	UPDATE tasks SET triggers = ?
+	WHERE taskid = ?
+	`
+
+	_, err = db.Exec(update_triggers_sql, triggers, taskid)
+	if err != nil {
+		log.Printf("%q: %s\n", err, update_triggers_sql)
+		return
+	}
+}
+
+func GetTaskHiddenStatus(taskid int) (bool, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return false, err
+	}
+	defer db.Close()
+
+	retrieve_hidden_sql := `
+	SELECT hidden FROM tasks WHERE taskid = ?
+	`
+
+	var hidden bool
+	err = db.QueryRow(retrieve_hidden_sql, taskid).Scan(&hidden)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_hidden_sql)
+		return false, err
+	}
+	return hidden, nil
+}
+
+func AssignTaskHiddenStatus(taskid int, hidden bool) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return
+	}
+	defer db.Close()
+
+	update_hidden_sql := `
+	UPDATE tasks SET hidden = ?
+	WHERE taskid = ?
+	`
+
+	_, err = db.Exec(update_hidden_sql, hidden, taskid)
+	if err != nil {
+		log.Printf("%q: %s\n", err, update_hidden_sql)
+		return
+	}
+}
+
+func GetTask(taskid int) models.Task {
+	task := &models.Task{}
+	task.TaskID = taskid
+	task.Title, _ = GetTaskTitle(taskid)
+	task.Description, _ = GetTaskDescription(taskid)
+	task.DueDate, _ = GetTaskDuedate(taskid)
+	task.Timeframe, _ = GetTaskTimeframe(taskid)
+	task.Schedule = "" //todo: add scheduling
+	task.Points, _ = GetTaskPoints(taskid)
+	//todo: add capability for multiple triggers
+	task.Triggers, _ = GetTaskTriggers(taskid)
+	task.Hidden, _ = GetTaskHiddenStatus(taskid)
+
+	return *task
+}
+
+func GetAllTaskIDS() ([]int, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	var tasks []int
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return tasks, err
+	}
+	defer db.Close()
+
+	retrieve_allids_sql := `
+	SELECT taskid FROM tasks
+	`
+
+	rows, err := db.Query(retrieve_allids_sql)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_allids_sql)
+		return tasks, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			log.Printf("Error scanning row: %v", err)
+			return tasks, err
+		}
+		tasks = append(tasks, id)
+	}
+	if err = rows.Err(); err != nil {
+		log.Printf("Error during rows iteration: %v", err)
+		return tasks, err
+	}
+	return tasks, nil
 }
