@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task List</title>
+  <title>Completed Tasks</title>
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="stylesheet" href="/assets/css/tasks.css">
 </head>
@@ -25,80 +25,57 @@
   </div>
 
   <!-- Page Title -->
-  <h1 class="page-title">Task List</h1>
+  <h1 class="page-title">Completed Tasks</h1>
 
-  <!-- Container for tasks -->
-  <div id="tasks-container" class="tasks-container">
-    <p id="loading-text" style="color:white;">Loading tasks...</p>
+  <!-- Task List -->
+  <div id="tasks-container">
+    <p style="color:white;">Loading completed tasks...</p>
   </div>
-
+  
   <script src="/assets/js/script.js"></script>
   <script>
-    // --- Navigation ---
     document.getElementById('index-btn').onclick = () => window.location.href = '/';
     document.getElementById('completed-btn').onclick = () => window.location.href = '/completed';
     document.getElementById('scoreboard-btn').onclick = () => window.location.href = '/scoreboard';
     document.getElementById('settings-btn').onclick = () => window.location.href = '/settings';
 
     const container = document.getElementById('tasks-container');
-    const loadingText = document.getElementById('loading-text');
 
-    // --- Load Tasks from API ---
-    async function loadTasks() {
+    async function loadCompletedTasks() {
       try {
-        const res = await fetch('/api/tasks');
-        if (!res.ok) throw new Error('Failed to fetch tasks');
+        const res = await fetch('http://localhost:8081/tasks/completed');
+        if (!res.ok) throw new Error('Failed to fetch');
         const tasks = await res.json();
-        loadingText.remove();
 
-        if (!tasks.length) {
-          container.innerHTML = `<p style="color:white;">No tasks available.</p>`;
+        container.innerHTML = '';
+
+        if (tasks.length === 0) {
+          container.innerHTML = '<p style="color:white;">No completed tasks yet.</p>';
           return;
         }
 
-        // Render tasks
         tasks.forEach(task => {
           const div = document.createElement('div');
           div.className = "task-item";
-          div.dataset.id = task.id;
-
           div.innerHTML = `
             <div class="task-content-wrapper">
               <div class="task-text">
                 <h2>${task.title}</h2>
                 <p>${task.description}</p>
               </div>
-              <button class="complete-btn">&#10003;</button>
+              <span style="color:lightgreen; font-weight:bold;">✔ Completed</span>
             </div>
           `;
-
           container.appendChild(div);
         });
 
       } catch (err) {
         console.error(err);
-        container.innerHTML = `<p style="color:red;">Error loading tasks.</p>`;
+        container.innerHTML = '<p style="color:red;">Error loading completed tasks.</p>';
       }
     }
 
-    // --- Handle Clicks ---
-    container.addEventListener('click', (e) => {
-      const taskItem = e.target.closest('.task-item');
-      if (!taskItem) return;
-
-      const taskId = taskItem.dataset.id;
-
-      // If user clicked "Complete"
-      if (e.target.classList.contains('complete-btn')) {
-        taskItem.remove();
-        return;
-      }
-
-      // Navigate to /task/{id}
-      window.location.href = `/task/${taskId}`;
-    });
-
-    document.addEventListener('DOMContentLoaded', loadTasks);
+    document.addEventListener('DOMContentLoaded', loadCompletedTasks);
   </script>
 </body>
 </html>

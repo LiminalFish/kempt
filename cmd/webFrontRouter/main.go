@@ -1,38 +1,68 @@
 package main
 
-// import "fmt"
 import (
+	"net/http"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// fmt.Println("This currently does nothing")
 	router := gin.Default()
 
+	// Serve HTML pages
 	router.StaticFile("/", "./web/index.html")
+	router.StaticFile("/completed", "./web/completed.html")
 	router.StaticFile("/scoreboard", "./web/scoreboard.html")
 	router.StaticFile("/settings", "./web/settings.html")
+
+	// FIXED: Serve task.html for /task/:id paths (e.g. /task/1)
+	router.GET("/task/:id", func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, "./web/task.html")
+	})
+
 	router.Static("/assets", "./web/assets/")
 
-	// get database tasks
+	// Hardcoded example tasks
+	tasks := []map[string]string{
+		{"id": "1", "title": "Task 1", "description": "Do something important", "status": "Incomplete", "due_date": "2025-11-01"},
+		{"id": "2", "title": "Task 2", "description": "Do another thing", "status": "Complete", "due_date": "2025-11-05"},
+	}
+
+	// Get all tasks
 	router.GET("/api/tasks", func(c *gin.Context) {
-    tasks := []map[string]string{
-        {"title": "Task 1", "description": "Do something important"},
-        {"title": "Task 2", "description": "Do another thing"},
-    }
-    c.JSON(200, tasks)
-})
+		c.JSON(http.StatusOK, tasks)
+	})
 
-	// Define a GET route for the root path "/"
-	// router.GET("/", func(c *gin.Context) {
-	// 	c.String(http.StatusOK, "Hello from Gin!") // Respond with a string
-	// })
+	// Get one task by ID
+	router.GET("/api/tasks/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		for _, t := range tasks {
+			if t["id"] == id {
+				c.JSON(http.StatusOK, t)
+				return
+			}
+		}
+		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
+	})
 
-	// Another example route
-	// router.GET("/ping", func(c *gin.Context) {
-	// 	c.JSON(http.StatusOK, gin.H{"message": "pong"}) // Respond with JSON
-	// })
+	// Edit task (mock)
+	router.POST("/api/tasks/edit/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		var updated map[string]string
+		if err := c.BindJSON(&updated); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+			return
+		}
+		for i, t := range tasks {
+			if t["id"] == id {
+				for k, v := range updated {
+					tasks[i][k] = v
+				}
+				c.JSON(http.StatusOK, gin.H{"message": "Task updated"})
+				return
+			}
+		}
+		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
+	})
 
-	// Run the server on port 8080
 	router.Run(":8080")
 }
