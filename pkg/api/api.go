@@ -21,9 +21,15 @@ func StartKemptAPI() {
 
 	router.GET("/users/:id", users_ID)
 
-	router.GET("/users/teams", users_teams)
+	router.GET("/users/:id/name", users_ID_name)
 
-	router.GET("/users/teams/:id", users_teams_ID)
+	router.GET("/users/:id/points", users_ID_points)
+
+	router.GET("/users/:id/type", users_ID_type)
+
+	router.GET("/users/:id/rank", users_ID_rank)
+
+	router.GET("/users/:id/team", users_ID_team)
 
 	router.Run(":8081")
 }
