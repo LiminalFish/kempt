@@ -27,8 +27,8 @@ type User struct {
 }
 
 type Team struct {
-	Name string `json:"name"`
-	ID   string `json:"id"`
+	TeamID int    `json:"id"`
+	Name   string `json:"name"`
 }
 
 type Action struct {
