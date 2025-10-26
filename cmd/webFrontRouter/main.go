@@ -10,6 +10,18 @@ func main() {
 	router := gin.Default()
 
 	router.StaticFile("/", "./web/index.html")
+	router.StaticFile("/scoreboard", "./web/scoreboard.html")
+	router.StaticFile("/settings", "./web/settings.html")
+	router.Static("/assets", "./web/assets/")
+
+	// get database tasks
+	router.GET("/api/tasks", func(c *gin.Context) {
+    tasks := []map[string]string{
+        {"title": "Task 1", "description": "Do something important"},
+        {"title": "Task 2", "description": "Do another thing"},
+    }
+    c.JSON(200, tasks)
+})
 
 	// Define a GET route for the root path "/"
 	// router.GET("/", func(c *gin.Context) {
