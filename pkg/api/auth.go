@@ -1,8 +1,19 @@
 package api
 
+import (
+	"log"
+
+	"github.com/LiminalFish/kempt/internal/userdb"
+)
+
 func auth(token string) (int, error) {
 
-	// ge
+	user, err := userdb.GetUserFromToken(token)
 
-	return 0, nil
+	if err != nil {
+		log.Println(err.Error())
+		return -1, err
+	}
+
+	return user.Type, nil
 }

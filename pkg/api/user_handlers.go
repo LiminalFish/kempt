@@ -5,11 +5,30 @@ import (
 	"strconv"
 
 	"github.com/LiminalFish/kempt/internal/userdb"
+	"github.com/LiminalFish/kempt/pkg/models"
 	"github.com/gin-gonic/gin"
 )
 
 // /users
 func users(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userIDs, err := userdb.GetAllUserIDS()
 
 	if err != nil {
@@ -25,6 +44,24 @@ func users(c *gin.Context) {
 
 // /users/<USER_ID>
 func users_ID(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
@@ -36,6 +73,7 @@ func users_ID(c *gin.Context) {
 	}
 
 	user := userdb.GetUser(userIDInt)
+	user.Token = "SECRET"
 
 	// if err != nil {
 	// 	log.Println(err.Error())
@@ -48,6 +86,24 @@ func users_ID(c *gin.Context) {
 
 // /users/<USER_ID>/name
 func users_ID_name(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
@@ -74,6 +130,24 @@ func users_ID_name(c *gin.Context) {
 
 // /users/<USER_ID>/points
 func users_ID_points(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
@@ -100,6 +174,24 @@ func users_ID_points(c *gin.Context) {
 
 // /users/<USER_ID>/type
 func users_ID_type(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
@@ -126,6 +218,24 @@ func users_ID_type(c *gin.Context) {
 
 // /users/<USER_ID>/rank
 func users_ID_rank(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
@@ -152,6 +262,24 @@ func users_ID_rank(c *gin.Context) {
 
 // /users/<USER_ID>/team
 func users_ID_team(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
 	userID := c.Param("id")
 
 	userIDInt, err := strconv.Atoi(userID)
