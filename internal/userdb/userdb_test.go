@@ -177,4 +177,8 @@ func TestUserDatabase(t *testing.T) {
 	// ------- Testing GetUser Function -------
 	user1 := GetUser(1)
 	t.Logf("Pass: Got user1: '%v'", user1)
+
+	// ------- Testing GetUserFromToken Function -------
+	user3, _ := GetUserFromToken("MMMMMMMMMM")
+	t.Logf("Pass: Got user3 from token. User: '%v'", user3)
 }

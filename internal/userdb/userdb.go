@@ -281,6 +281,29 @@ func GetUserToken(userid int) (string, error) {
 	return token, nil
 }
 
+func GetUserFromToken(token string) (*models.User, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	user := &models.User{}
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return user, err
+	}
+	defer db.Close()
+
+	retrieve_userid_sql := `
+	SELECT userid FROM users WHERE token = ?
+	`
+	var userid int
+	err = db.QueryRow(retrieve_userid_sql, token).Scan(&userid)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_userid_sql)
+		return user, err
+	}
+	*user = GetUser(userid)
+	return user, nil
+}
+
 // Retrieves teamid from specified userid.
 func GetUserTeamid(userid int) (int, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
