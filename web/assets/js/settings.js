@@ -1,12 +1,3 @@
-// // Get D
-
-
-
-
-
-
-
-
 // Get DOM elements
 const loginBtn = document.getElementById('login-btn');
 const logoutBtn = document.getElementById('logout-btn');

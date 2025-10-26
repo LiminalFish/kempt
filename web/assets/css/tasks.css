@@ -8,17 +8,18 @@
 
 /* Individual task item */
 .task-item {
-  display: flex;           /* flex container for button + text */
-  align-items: center;     /* vertical alignment */
+  display: flex;           
+  align-items: center;     
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid #fff;
   border-radius: 10px;
   margin: 10px 0;
   padding: 15px;
   transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
 }
 
-/* Complete button on the left */
+/* Complete button */
 .complete-btn {
   background-color: #3b0066;
   align-items: right;
@@ -29,7 +30,7 @@
   cursor: pointer;
   font-family: "Courier New", monospace;
   font-size: 1.2rem;
-  margin-right: 15px;          /* space between button and text */
+  margin-right: 15px;          
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
@@ -41,7 +42,7 @@
 /* Task text */
 .task-item .task-text {
   display: flex;
-  flex-direction: column;  /* stack title and description vertically */
+  flex-direction: column;
 }
 
 /* Title and description */
@@ -53,4 +54,10 @@
 .task-item .task-text p {
   margin: 0;
   font-size: 1rem;
+}
+
+/* Loading / empty state message */
+#tasks-container p {
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
