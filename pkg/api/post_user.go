@@ -71,7 +71,7 @@ func post_users_ID_type(c *gin.Context) {
 }
 
 // /users/<USER_ID>/rank
-func post_user_ID_rank(c *gin.Context) {
+func post_users_ID_rank(c *gin.Context) {
 
 }
 
