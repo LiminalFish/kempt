@@ -1,9 +1,66 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Kempt</title>
-  </head>
-  <body>
-    <h1>Example Text</h1>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index Page</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/tasks.css">
+</head>
+<body>
+
+  <!-- Include taskbar and hamburger -->
+  <div class="hamburger" id="hamburger">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <div class="taskbar" id="taskbar">
+    <button id="index-btn">Tasks</button>
+    <button id="scoreboard-btn">Scoreboard</button>
+    <button id="settings-btn">Settings</button>
+  </div>
+
+  <h1 class="page-title">Task List</h1>
+
+  <!-- Container for tasks -->
+  <div id="tasks-container"></div>
+
+  <script src="/assets/js/script.js"></script>
+  <script>
+    const tasks = [
+      { title: "Task 1", description: "Complete the first task" },
+      { title: "Task 2", description: "Complete the second task" },
+      { title: "Task 3", description: "Complete the third task" }
+    ];
+
+    const container = document.getElementById('tasks-container');
+
+    tasks.forEach((task, index) => {
+      const div = document.createElement('div');
+      div.className = "task-item";
+
+      div.innerHTML = `
+        <div class="task-content-wrapper">
+          <div class="task-text">
+            <h2>${task.title}</h2>
+            <p>${task.description}</p>
+          </div>
+          <button class="complete-btn">&#10003;</button>
+        </div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    container.addEventListener('click', (e) => {
+      if (e.target.classList.contains('complete-btn')) {
+        const taskItem = e.target.closest('.task-item');
+        taskItem.remove();
+        // Backend call can be added later
+      }
+    });
+  </script>
+</body>
 </html>

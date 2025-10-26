@@ -1,0 +1,56 @@
+/* Container for tasks */
+#tasks-container {
+  margin-left: 320px; /* To avoid overlapping with taskbar */
+  padding: 20px;
+  font-family: "Courier New", monospace;
+  color: white;
+}
+
+/* Individual task item */
+.task-item {
+  display: flex;           /* flex container for button + text */
+  align-items: center;     /* vertical alignment */
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #fff;
+  border-radius: 10px;
+  margin: 10px 0;
+  padding: 15px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* Complete button on the left */
+.complete-btn {
+  background-color: #3b0066;
+  align-items: right;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Courier New", monospace;
+  font-size: 1.2rem;
+  margin-right: 15px;          /* space between button and text */
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.complete-btn:hover {
+  background-color: #5c00a0;
+  transform: scale(1.1);
+}
+
+/* Task text */
+.task-item .task-text {
+  display: flex;
+  flex-direction: column;  /* stack title and description vertically */
+}
+
+/* Title and description */
+.task-item .task-text h2 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.task-item .task-text p {
+  margin: 0;
+  font-size: 1rem;
+}
