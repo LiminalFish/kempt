@@ -15,13 +15,13 @@ type Task struct {
 }
 
 type User struct {
+	UserID int    `json:"userid"`
 	Name   string `json:"name"`
-	Type   string `json:"type"`
+	Type   int    `json:"type"`
 	Points int    `json:"points"`
 	Rank   int    `json:"rank"`
 	Token  string `json:"token"`
-	ID     string `json:"id"`
-	TeamID string `json:"teamid"`
+	TeamID int    `json:"teamid"`
 }
 
 type Team struct {
