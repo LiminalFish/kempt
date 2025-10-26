@@ -233,7 +233,7 @@ func post_tasks_ID_triggers(c *gin.Context) {
 	permLevel := models.USER
 
 	type TriggersChange struct {
-		Triggers int `json:"description"`
+		Triggers int `json:"triggers"`
 	}
 
 	var changeTriggers TriggersChange
