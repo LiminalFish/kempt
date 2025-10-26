@@ -1,15 +1,16 @@
 package api
 
 import (
-	"github.com/LiminalFish/kempt/internal/userdb"
-	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
+
+	"github.com/LiminalFish/kempt/internal/userdb"
+	"github.com/gin-gonic/gin"
 )
 
 // /users
 func users(c *gin.Context) {
-	userIDs, err := userdb.GetAllUsers()
+	userIDs, err := userdb.GetAllUserIDS()
 
 	if err != nil {
 		log.Println(err.Error())

@@ -3,9 +3,10 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"github.com/LiminalFish/pkg/models"
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"github.com/LiminalFish/kempt/pkg/models"
+	"github.com/gin-gonic/gin"
 )
 
 func HashString(input string) string {
