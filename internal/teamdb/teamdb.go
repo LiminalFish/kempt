@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/LiminalFish/kempt/pkg/models"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -94,7 +95,7 @@ func GetTeamName(teamid int) (string, error) {
 }
 
 // Assign a new team name to a specified teamid.
-func AssignUserName(teamid int, name string) {
+func AssignTeamName(teamid int, name string) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
@@ -113,4 +114,47 @@ func AssignUserName(teamid int, name string) {
 		log.Printf("%q: %s\n", err, update_teamname_sql)
 		return
 	}
+}
+
+func GetTeam(teamid int) models.Team {
+	team := &models.Team{}
+	team.Name, _ = GetTeamName(teamid)
+	team.TeamID = teamid
+
+	return *team
+}
+
+func GetAllTeamIDS() ([]int, error) {
+	db, err := sql.Open("sqlite3", DIRECTORY)
+	var teams []int
+	if err != nil {
+		log.Println(err)
+		db.Close()
+		return teams, err
+	}
+	defer db.Close()
+
+	retrieve_allids_sql := `
+	SELECT teamid FROM teams
+	`
+
+	rows, err := db.Query(retrieve_allids_sql)
+	if err != nil {
+		log.Printf("%q: %s\n", err, retrieve_allids_sql)
+		return teams, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			log.Printf("Error scanning row: %v", err)
+			return teams, err
+		}
+		teams = append(teams, id)
+	}
+	if err = rows.Err(); err != nil {
+		log.Printf("Error during rows iteration: %v", err)
+		return teams, err
+	}
+	return teams, nil
 }
