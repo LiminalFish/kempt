@@ -32,7 +32,8 @@ type Team struct {
 }
 
 type Action struct {
-	Type      string `json:"type"`
-	UserID    string `json:"userid"`
 	Timestamp int    `json:"timestamp"`
+	UserID    int    `json:"userid"`
+	TaskName  string `json:"taskname"`
+	Points    int    `json:"points"`
 }
