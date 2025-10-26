@@ -10,7 +10,7 @@ import (
 )
 
 // /users
-func users(c *gin.Context) {
+func get_users(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -43,7 +43,7 @@ func users(c *gin.Context) {
 }
 
 // /users/<USER_ID>
-func users_ID(c *gin.Context) {
+func get_users_ID(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -85,7 +85,7 @@ func users_ID(c *gin.Context) {
 }
 
 // /users/<USER_ID>/name
-func users_ID_name(c *gin.Context) {
+func get_users_ID_name(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -129,7 +129,7 @@ func users_ID_name(c *gin.Context) {
 }
 
 // /users/<USER_ID>/points
-func users_ID_points(c *gin.Context) {
+func get_users_ID_points(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -173,7 +173,7 @@ func users_ID_points(c *gin.Context) {
 }
 
 // /users/<USER_ID>/type
-func users_ID_type(c *gin.Context) {
+func get_users_ID_type(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -217,7 +217,7 @@ func users_ID_type(c *gin.Context) {
 }
 
 // /users/<USER_ID>/rank
-func users_ID_rank(c *gin.Context) {
+func get_users_ID_rank(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")
@@ -261,7 +261,7 @@ func users_ID_rank(c *gin.Context) {
 }
 
 // /users/<USER_ID>/team
-func users_ID_team(c *gin.Context) {
+func get_users_ID_team(c *gin.Context) {
 	permLevel := models.USER
 
 	token := c.GetHeader("auth")

@@ -1,0 +1,81 @@
+package api
+
+import (
+	"log"
+	"strconv"
+
+	"github.com/LiminalFish/kempt/internal/userdb"
+	"github.com/LiminalFish/kempt/pkg/models"
+	"github.com/gin-gonic/gin"
+)
+
+// /users/<USER_ID>/name
+func post_users_ID_name(c *gin.Context) {
+	permLevel := models.MOD
+
+	type NameChange struct {
+		Name string `json:"name"`
+	}
+
+	var changeName NameChange
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	userIDInt, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	targetUser := userdb.GetUser(userIDInt)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) || token != targetUser.Token {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
+	if err := c.BindJSON(&changeName); err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	userdb.AssignUserName(targetUser.UserID, changeName.Name)
+}
+
+// /users/<USER_ID>/points
+func post_users_ID_points(c *gin.Context) {
+
+}
+
+// /users/<USER_ID>/type
+func post_users_ID_type(c *gin.Context) {
+
+}
+
+// /users/<USER_ID>/rank
+func post_user_ID_rank(c *gin.Context) {
+
+}
+
+// /users/<USER_ID>/team
+func post_users_ID_team(c *gin.Context) {
+
+}

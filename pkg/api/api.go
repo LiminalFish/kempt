@@ -19,19 +19,29 @@ func StartKemptAPI() {
 
 	router.GET("tasks/delete/:id", tasks_delete_ID)
 
-	router.GET("/users", users)
+	router.GET("/users", get_users)
 
-	router.GET("/users/:id", users_ID)
+	router.GET("/users/:id", get_users_ID)
 
-	router.GET("/users/:id/name", users_ID_name)
+	router.GET("/users/:id/name", get_users_ID_name)
 
-	router.GET("/users/:id/points", users_ID_points)
+	router.GET("/users/:id/points", get_users_ID_points)
 
-	router.GET("/users/:id/type", users_ID_type)
+	router.GET("/users/:id/type", get_users_ID_type)
 
-	router.GET("/users/:id/rank", users_ID_rank)
+	router.GET("/users/:id/rank", get_users_ID_rank)
 
-	router.GET("/users/:id/team", users_ID_team)
+	router.GET("/users/:id/team", get_users_ID_team)
+
+	router.POST("/users/:id/name", post_users_ID_name)
+
+	router.POST("/users/:id/points", post_users_ID_points)
+
+	router.POST("/users/:id/type", post_users_ID_type)
+
+	router.POST("/users/:id/rank", post_users_ID_rank)
+
+	router.POST("/users/:id/team", post_users_ID_team)
 
 	router.Run(":8081")
 }
