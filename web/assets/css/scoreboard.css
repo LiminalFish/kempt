@@ -1,6 +1,8 @@
 #scoreboard-container {
   margin-top: 50px;
-  margin-left: 20px;
+  /* FIX: Removed the extra margin. It should be 0 or a small value */
+  margin-left: 0;
+  padding: 20px;
   color: white;
   font-family: "Courier New", monospace;
   max-width: 600px;
@@ -29,16 +31,32 @@
   transform: scale(1.02);
 }
 
+/* --- NEW: Highlight for the current user --- */
+.score-item.current-user {
+  background: rgba(0, 123, 255, 0.3); /* Blue highlight */
+  border-color: #007bff;
+  transform: scale(1.02);
+}
+
 .rank {
   font-weight: bold;
   color: #ffd700; /* gold for rank numbers */
-  margin-right: 10px;
+  margin-right: 15px; /* Increased margin */
 }
 
 .username {
   flex: 1;
+  font-weight: bold;
+}
+
+/* --- NEW: Style for the DB rank --- */
+.user-rank {
+  font-size: 0.9em;
+  color: #aaa;
+  margin-right: 15px;
 }
 
 .points {
   font-weight: bold;
 }
+

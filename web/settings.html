@@ -21,7 +21,7 @@
   <!-- Taskbar -->
   <div class="taskbar" id="taskbar">
     <button id="index-btn">Tasks</button>
-    <button id="completed-btn">Completed</button>
+    <button id="completed-btn" style="display:none">Completed</button>
     <button id="scoreboard-btn">Scoreboard</button>
     <button id="settings-btn">Settings</button>
   </div>
@@ -37,8 +37,8 @@
       <label for="username">Username:</label><br>
       <input type="text" id="username" placeholder="Enter username"><br>
 
-      <label for="password">Password:</label><br>
-      <input type="password" id="password" placeholder="Enter password"><br>
+      <label for="password">Password (Token):</label><br>
+      <input type="password" id="password" placeholder="Enter your token"><br>
 
       <button id="login-btn">Log In</button>
     </div>
@@ -49,7 +49,81 @@
 
   <!-- JS scripts -->
   <script src="/assets/js/script.js"></script> <!-- Taskbar & hamburger functionality -->
-  <script src="/assets/js/settings.js"></script> <!-- Login/Logout functionality -->
+  
+  <!-- NEW LOGIN SCRIPT -->
+  <script>
+    // --- Navigation Buttons ---
+    document.getElementById('index-btn').onclick = () => window.location.href = '/';
+    document.getElementById('completed-btn').onclick = () => window.location.href = '/completed';
+    document.getElementById('scoreboard-btn').onclick = () => window.location.href = '/scoreboard';
+    document.getElementById('settings-btn').onclick = () => window.location.href = '/settings';
+
+    // --- Auth Elements ---
+    const authStatus = document.getElementById('auth-status');
+    const loginForm = document.getElementById('login-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginBtn = document.getElementById('login-btn');
+    const tokenInput = document.getElementById('password'); // This is the token
+    const usernameInput = document.getElementById('username');
+
+    // --- Login Function ---
+    loginBtn.addEventListener('click', () => {
+      // Per your request, the "password" is the token
+      const token = tokenInput.value.trim();
+      const username = usernameInput.value.trim(); // Storing username too
+
+      if (!token) {
+        alert('Please enter your token in the password field.');
+        return;
+      }
+      if (!username) {
+        alert('Please enter your username.');
+        return;
+      }
+
+      // Save token and username to browser storage
+      localStorage.setItem('AUTH_TOKEN', token);
+      localStorage.setItem('USERNAME', username);
+      
+      // Update the UI
+      updateAuthUI();
+      
+      // Clear form
+      tokenInput.value = '';
+      usernameInput.value = '';
+    });
+
+    // --- Logout Function ---
+    logoutBtn.addEventListener('click', () => {
+      // Remove token and username from storage
+      localStorage.removeItem('AUTH_TOKEN');
+      localStorage.removeItem('USERNAME');
+      
+      // Update the UI
+      updateAuthUI();
+    });
+
+    // --- Update UI based on auth status ---
+    function updateAuthUI() {
+      const token = localStorage.getItem('AUTH_TOKEN');
+      const username = localStorage.getItem('USERNAME');
+
+      if (token && username) {
+        // Logged In
+        authStatus.textContent = `You are logged in as: ${username}`;
+        loginForm.style.display = 'none';
+        logoutBtn.style.display = 'block';
+      } else {
+        // Logged Out
+        authStatus.textContent = 'You are currently logged out.';
+        loginForm.style.display = 'block';
+        logoutBtn.style.display = 'none';
+      }
+    }
+
+    // --- Check auth status on page load ---
+    document.addEventListener('DOMContentLoaded', updateAuthUI);
+  </script>
 
 </body>
 </html>

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/LiminalFish/kempt/internal/taskdb"
+	"github.com/LiminalFish/kempt/internal/userdb"
 	"github.com/LiminalFish/kempt/pkg/models"
 	"github.com/gin-gonic/gin"
 )
@@ -94,7 +95,7 @@ func post_tasks_ID_description(c *gin.Context) {
 		return
 	}
 
-	taskdb.AssignTaskTitle(targetTask.TaskID, changeDescription.Description)
+	taskdb.AssignTaskDescription(targetTask.TaskID, changeDescription.Description)
 }
 
 func post_tasks_ID_duedate(c *gin.Context) {
@@ -322,13 +323,14 @@ func post_tasks_ID_delete(c *gin.Context) {
 
 	token := c.GetHeader("auth")
 
-	userPerm, err := auth(token)
-
+	currentUser, err := userdb.GetUserFromToken(token)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(400, err.Error())
+		c.JSON(400, "Invalid auth token")
 		return
 	}
+
+	userPerm := currentUser.Type
 
 	taskIDInt, err := strconv.Atoi(c.Param("id"))
 
@@ -338,14 +340,21 @@ func post_tasks_ID_delete(c *gin.Context) {
 		return
 	}
 
-	targetTask := taskdb.GetTask(taskIDInt)
-
 	if userPerm > int(permLevel) {
 		log.Println("Not high enough permissions")
 		c.JSON(400, "Not high enough permissions")
 		return
 	}
-
+	targetTask := taskdb.GetTask(taskIDInt)
+	taskPoints := targetTask.Points
+	currentUserPoints, err := userdb.GetUserPoints(currentUser.UserID)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, "Failed to get user points")
+		return
+	}
+	newUserPoints := currentUserPoints + taskPoints
+	userdb.AssignUserPoints(currentUser.UserID, newUserPoints)
 	taskdb.DeleteTask(targetTask.TaskID)
 }
 

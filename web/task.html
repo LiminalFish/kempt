@@ -20,7 +20,7 @@
   <!-- Taskbar -->
   <div class="taskbar" id="taskbar">
     <button id="index-btn">Tasks</button>
-    <button id="completed-btn">Completed</button>
+    <button id="completed-btn" style="display:none">Completed</button>
     <button id="scoreboard-btn">Scoreboard</button>
     <button id="settings-btn">Settings</button>
   </div>
@@ -34,6 +34,8 @@
   </div>
 
   <script src="/assets/js/script.js"></script>
+  <script src="/assets/js/script.js"></script>
+  <script src="/assets/js/script.js"></script>
   <script>
     // --- Navigation Buttons ---
     document.getElementById('index-btn').onclick = () => window.location.href = '/';
@@ -42,11 +44,20 @@
     document.getElementById('settings-btn').onclick = () => window.location.href = '/settings';
 
     const container = document.getElementById('task-details-container');
+    const AUTH_TOKEN = 'blueblueblue';
 
-    // FIXED: Extract task ID from path /task/{id}
+    // Extract task ID from path /task/{id}
     function getTaskIdFromURL() {
       const parts = window.location.pathname.split("/");
-      return parts[parts.length - 1]; // e.g. /task/1 → "1"
+      return parts[parts.length - 1];
+    }
+
+    // --- HELPER: Convert UNIX timestamp to YYYY-MM-DD string ---
+    function unixToDateString(unixTimestamp) {
+      if (!unixTimestamp || unixTimestamp <= 0) return '';
+      // Multiply by 1000 to convert seconds to milliseconds
+      const date = new Date(unixTimestamp * 1000);
+      return date.toISOString().split('T')[0];
     }
 
     // --- Load Task Details ---
@@ -58,26 +69,30 @@
       }
 
       try {
-        const res = await fetch(`/api/tasks/${id}`);
+        const res = await fetch(`http://127.0.0.1:8081/tasks/${id}`, {
+          headers: {
+            'auth': AUTH_TOKEN
+          }
+        });
         if (!res.ok) throw new Error('Failed to fetch task');
-        const task = await res.json();
+        const task = await res.json(); //
 
+        // --- UPDATED HTML ---
+        // Added "Points" input (type=number)
+        // Added "Due Date" input (type=date) and used helper to set value
         container.innerHTML = `
           <div class="task-details-box">
-            <label>Title:</label>
+            <label for="task-title">Title:</label>
             <input type="text" id="task-title" value="${task.title || ''}">
 
-            <label>Description:</label>
+            <label for="task-desc">Description:</label>
             <textarea id="task-desc">${task.description || ''}</textarea>
 
-            <label>Status:</label>
-            <select id="task-status">
-              <option value="Incomplete" ${task.status === 'Incomplete' ? 'selected' : ''}>Incomplete</option>
-              <option value="Complete" ${task.status === 'Complete' ? 'selected' : ''}>Complete</option>
-            </select>
+            <label for="task-points">Points:</label>
+            <input type="number" id="task-points" value="${task.points || 0}" min="0">
 
-            <label>Due Date:</label>
-            <input type="date" id="task-due" value="${task.due_date || ''}">
+            <label for="task-due">Due Date:</label>
+            <input type="date" id="task-due" value="${unixToDateString(task.duedate)}">
 
             <div class="buttons">
               <button id="save-btn"> Save Changes</button>
@@ -94,25 +109,58 @@
 
         // --- Save Button ---
         document.getElementById('save-btn').addEventListener('click', async () => {
-          const updatedTask = {
-            title: document.getElementById('task-title').value,
-            description: document.getElementById('task-desc').value,
-            status: document.getElementById('task-status').value,
-            due_date: document.getElementById('task-due').value
-          };
-
-          const res = await fetch(`/api/tasks/edit/${id}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedTask)
-          });
-
           const msg = document.getElementById('save-message');
-          if (res.ok) {
+          msg.textContent = "Saving...";
+          msg.style.color = "white";
+
+          try {
+            // --- UPDATED SAVE LOGIC ---
+            const newTitle = document.getElementById('task-title').value;
+            const newDesc = document.getElementById('task-desc').value;
+            
+            // Get Points value
+            const newPoints = parseInt(document.getElementById('task-points').value, 10) || 0;
+            
+            // Get date string and convert to UNIX timestamp
+            const dateString = document.getElementById('task-due').value;
+            let newDueDate = 0;
+            if (dateString) { // "YYYY-MM-DD"
+              // Gets date at midnight in user's local timezone
+              newDueDate = Math.floor(new Date(dateString).getTime() / 1000);
+            }
+
+            const fetchOptions = (body) => ({
+              method: 'POST',
+              headers: {
+                'auth': AUTH_TOKEN,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(body)
+            });
+
+            // Added new fetch for "points" to Promise.all
+            const promises = [
+              fetch(`http://127.0.0.1:8081/tasks/${id}/title`, fetchOptions({ title: newTitle })),
+              fetch(`http://127.0.0.1:8081/tasks/${id}/description`, fetchOptions({ description: newDesc })),
+              fetch(`http://127.0.0.1:8081/tasks/${id}/duedate`, fetchOptions({ duedate: newDueDate })),
+              fetch(`http://127.0.0.1:8081/tasks/${id}/points`, fetchOptions({ points: newPoints })) //
+            ];
+
+            const results = await Promise.all(promises);
+
+            for (const res of results) {
+              if (!res.ok) {
+                const errorText = await res.text();
+                throw new Error(`One or more fields failed to save: ${errorText}`);
+              }
+            }
+            
             msg.textContent = "Changes saved successfully!";
             msg.style.color = "lightgreen";
-          } else {
-            msg.textContent = "Failed to save changes.";
+
+          } catch (err) {
+            console.error(err);
+            msg.textContent = `Failed to save changes: ${err.message}`;
             msg.style.color = "red";
           }
         });

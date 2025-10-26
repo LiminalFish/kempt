@@ -8,8 +8,6 @@
 
 /* Individual task item */
 .task-item {
-  display: flex;           
-  align-items: center;     
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid #fff;
   border-radius: 10px;
@@ -19,10 +17,28 @@
   cursor: pointer;
 }
 
+/* Wrapper for content inside task item */
+.task-content-wrapper {
+  display: flex;
+  align-items: center; /* Vertically centers the main info block and the button */
+  justify-content: space-between; /* Pushes main info block left, button right */
+  width: 100%;
+}
+
+/* --- NEW: Wrapper for title, description, and due date --- */
+.task-main-info {
+  display: flex;
+  flex-grow: 1; /* Allows this block to take all available space */
+  align-items: center; /* Vertically aligns text block and due date */
+  justify-content: space-between; /* Pushes text block left, due date right */
+  margin-right: 15px; /* Add some space before the complete button */
+  /* This 'min-width: 0' is a flexbox trick to allow text to truncate */
+  min-width: 0; 
+}
+
 /* Complete button */
 .complete-btn {
   background-color: #3b0066;
-  align-items: right;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -30,7 +46,7 @@
   cursor: pointer;
   font-family: "Courier New", monospace;
   font-size: 1.2rem;
-  margin-right: 15px;          
+  flex-shrink: 0; /* Prevents button from shrinking */
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
@@ -43,17 +59,37 @@
 .task-item .task-text {
   display: flex;
   flex-direction: column;
+  flex-grow: 1; /* Allows text to take up available space */
+  margin-right: 15px; /* Add some space between description and due date */
+  /* This 'min-width: 0' is a flexbox trick to allow text to truncate */
+  min-width: 0;
 }
 
 /* Title and description */
 .task-item .task-text h2 {
   margin: 0 0 5px 0;
   font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .task-item .task-text p {
   margin: 0;
   font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #ccc;
+}
+
+/* --- Due Date Style --- */
+.task-due-date {
+  font-size: 0.9em;
+  font-family: "Courier New", monospace;
+  color: #ccc;
+  flex-shrink: 0; /* Prevents it from being squished */
+  white-space: nowrap;
 }
 
 /* Loading / empty state message */
@@ -61,3 +97,4 @@
   font-size: 1.1rem;
   opacity: 0.8;
 }
+

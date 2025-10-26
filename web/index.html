@@ -19,13 +19,33 @@
   <!-- Taskbar -->
   <div class="taskbar" id="taskbar">
     <button id="index-btn">Tasks</button>
-    <button id="completed-btn">Completed</button>
+    <!-- TEMPORARILY HIDDEN -->
+    <button id="completed-btn" style="display:none;">Completed</button>
     <button id="scoreboard-btn">Scoreboard</button>
     <button id="settings-btn">Settings</button>
   </div>
 
   <!-- Page Title -->
-  <h1 class="page-title">Task List</h1>
+ <h1 class="page-title">Task List</h1>
+
+  <!-- New Task Button -->
+  <button id="new-task-btn" class="new-task-btn">+</button>
+
+  <!-- New Task Panel (Modal) -->
+  <div id="new-task-panel" class="modal-overlay">
+    <div class="modal-content">
+      <h2>New Task</h2>
+      
+      <!-- REVERTED: Removed Points and Due Date fields -->
+      <label for="new-task-title">Title:</label>
+      <input type="text" id="new-task-title" placeholder="Task title">
+
+      <div class="modal-buttons">
+        <button id="cancel-task-btn" class="btn-secondary">Cancel</button>
+        <button id="save-task-btn" class="btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Container for tasks -->
   <div id="tasks-container" class="tasks-container">
@@ -36,46 +56,68 @@
   <script>
     // --- Navigation ---
     document.getElementById('index-btn').onclick = () => window.location.href = '/';
+    // The line below is still here, just in case you re-enable the button
     document.getElementById('completed-btn').onclick = () => window.location.href = '/completed';
     document.getElementById('scoreboard-btn').onclick = () => window.location.href = '/scoreboard';
     document.getElementById('settings-btn').onclick = () => window.location.href = '/settings';
 
     const container = document.getElementById('tasks-container');
-    const loadingText = document.getElementById('loading-text');
 
-    // Hardcoded Auth Token
-    const AUTH_TOKEN = 'blueblueblue';
+    // --- Auth ---
+    const AUTH_TOKEN = localStorage.getItem('AUTH_TOKEN');
+    if (!AUTH_TOKEN) {
+      window.location.href = '/settings';
+    }
+
+    // --- Due Date Formatter ---
+    function formatDueDate(unixTimestamp) {
+      if (!unixTimestamp || unixTimestamp <= 0) {
+        return '';
+      }
+
+      const taskDate = new Date(unixTimestamp * 1000);
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const taskDateString = taskDate.toISOString().split('T')[0];
+      const todayString = today.toISOString().split('T')[0];
+      const tomorrowString = tomorrow.toISOString().split('T')[0];
+
+      if (taskDateString === todayString) {
+        return 'Today';
+      }
+      if (taskDateString === tomorrowString) {
+        return 'Tomorrow';
+      }
+
+      const mm = String(taskDate.getMonth() + 1).padStart(2, '0');
+      const dd = String(taskDate.getDate()).padStart(2, '0');
+      const yyyy = taskDate.getFullYear();
+      return `${mm}/${dd}/${yyyy}`;
+    }
 
     // --- Load Tasks from API ---
-    // This is the correct ASYNC function
     async function loadTasks() {
       try {
-        // 1. Fetch the list of task IDs with the auth header
         const res = await fetch('http://127.0.0.1:8081/tasks', {
-          headers: {
-            'auth': AUTH_TOKEN
-          }
+          headers: { 'auth': AUTH_TOKEN }
         });
         if (!res.ok) throw new Error('Failed to fetch task list');
         
-        // We expect an object like { "taskIDs": [1, 2, 3] }
-        const response = await res.json();  // Get the object
-        const taskIds = response.taskIDs;   // Get the array *inside* the object
+        const response = await res.json();
+        const taskIds = response.taskIDs;
 
-        loadingText.remove();
+        container.innerHTML = ''; 
 
-        if (!taskIds.length) {
+        if (!taskIds || !taskIds.length) {
           container.innerHTML = `<p style="color:white;">No tasks available.</p>`;
           return;
         }
 
-        // 2. Create an array of promises, one for each ID, also with auth header
-        // This is the correct way to handle multiple fetches
         const taskPromises = taskIds.map(id => {
           return fetch(`http://127.0.0.1:8081/tasks/${id}`, {
-            headers: {
-              'auth': AUTH_TOKEN
-            }
+            headers: { 'auth': AUTH_TOKEN }
           })
             .then(res => {
               if (!res.ok) throw new Error(`Failed to fetch task ${id}`);
@@ -83,10 +125,8 @@
             });
         });
 
-        // 3. Wait for all promises to resolve
         const tasks = await Promise.all(taskPromises);
 
-        // 4. Now we can safely render each one
         tasks.forEach(task => {
           const div = document.createElement('div');
           div.className = "task-item";
@@ -94,9 +134,12 @@
 
           div.innerHTML = `
             <div class="task-content-wrapper">
-              <div class="task-text">
-                <h2>${task.title}</h2>
-                <p>${task.description}</p>
+              <div class="task-main-info">
+                <div class="task-text">
+                  <h2>${task.title}</h2>
+                  <p>${task.description}</p>
+                </div>
+                <span class="task-due-date">${formatDueDate(task.duedate)}</span>
               </div>
               <button class="complete-btn">&#10003;</button>
             </div>
@@ -107,26 +150,27 @@
 
       } catch (err) {
         console.error(err);
-        if (loadingText) loadingText.remove();
-        container.innerHTML = `<p style="color:red;">Error loading tasks.</p>`;
+        if (container.innerHTML === '') {
+            container.innerHTML = `<p style="color:red;">Error loading tasks.</p>`;
+        }
       }
     }
 
-    // --- Handle Clicks ---
-    container.addEventListener('click', async (e) => { // This is also async
+    // --- Handle Task Clicks ---
+    container.addEventListener('click', async (e) => {
       const taskItem = e.target.closest('.task-item');
       if (!taskItem) return;
 
       const taskId = taskItem.dataset.id;
 
-      // If user clicked "Complete"
+      // --- TYPO FIX HERE ---
+      // Changed 'contents' to 'contains'
       if (e.target.classList.contains('complete-btn')) {
+        e.stopPropagation(); 
         try {
           const res = await fetch(`http://127.0.0.1:8081/tasks/${taskId}/delete`, {
             method: 'POST', 
-            headers: {
-              'auth': AUTH_TOKEN
-            }
+            headers: { 'auth': AUTH_TOKEN }
           });
 
           if (!res.ok) {
@@ -136,16 +180,89 @@
           taskItem.remove();
         } catch (err) {
           console.error(err);
-          alert('Error: Could not complete task.');
+          alert('Error: Could not complete task.'); 
         }
         return;
       }
 
-      // Navigate to /task/{id}
+      // This is the click-to-edit logic, it's still here:
       window.location.href = `/task/${taskId}`;
+    });
+
+    // --- Modal Elements & Logic ---
+    const newTaskBtn = document.getElementById('new-task-btn');
+    const newTaskPanel = document.getElementById('new-task-panel');
+    const cancelTaskBtn = document.getElementById('cancel-task-btn');
+    const saveTaskBtn = document.getElementById('save-task-btn');
+    const newTaskTitle = document.getElementById('new-task-title');
+    
+    // REVERTED: Removed points and due date elements
+    // const newTaskPoints = document.getElementById('new-task-points');
+    // const newTaskDue = document.getElementById('new-task-due');
+
+    function hideModal() {
+      newTaskPanel.style.display = 'none';
+      newTaskTitle.value = '';
+      // REVERTED: Removed points and due date clearing
+      // newTaskPoints.value = '0';
+      // newTaskDue.value = '';
+    }
+
+    newTaskBtn.addEventListener('click', () => {
+      newTaskPanel.style.display = 'flex';
+    });
+    cancelTaskBtn.addEventListener('click', hideModal);
+    newTaskPanel.addEventListener('click', (e) => {
+      if (e.target === newTaskPanel) {
+        hideModal();
+      }
+    });
+
+    // --- Save New Task ---
+    saveTaskBtn.addEventListener('click', async () => {
+      const title = newTaskTitle.value.trim();
+      
+      // REVERTZED: Removed points and due date logic
+      // const points = parseInt(newTaskPoints.value, 10) || 0;
+      // const dateString = newTaskDue.value;
+      // let duedate = 0;
+      // if (dateString) {
+      //   duedate = Math.floor(new Date(dateString).getTime() / 1000);
+      // }
+
+      if (!title) {
+        alert('Please enter a task title.');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://127.0.0.1:8081/tasks/create', {
+          method: 'POST',
+          headers: {
+            'auth': AUTH_TOKEN,
+            'Content-Type': 'application/json'
+          },
+          // REVERTED: Body only contains title
+          body: JSON.stringify({
+            title: title
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error('Failed to create task on server');
+        }
+
+        hideModal();
+        await loadTasks(); // Refresh list
+
+      } catch (err) {
+        console.error(err);
+        alert('Error: Could not create task.');
+      }
     });
 
     document.addEventListener('DOMContentLoaded', loadTasks);
   </script>
 </body>
 </html>
+
