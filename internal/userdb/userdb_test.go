@@ -168,7 +168,7 @@ func TestUserDatabase(t *testing.T) {
 	DeleteUser(2)
 
 	// ------- Testing GetAllUsers Function -------
-	ids, err := GetAllUsers()
+	ids, err := GetAllUserIDS()
 	if err != nil {
 		t.Fatalf("Failed to get all users: '%v'", err)
 	}
