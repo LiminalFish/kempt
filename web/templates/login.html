@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kempt</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card login-card">
+            <h2>Login</h2>
+            <p>Please enter your Kempt API auth token to continue.</p>
+            {{ if .Error }}
+                <p class="error-text">{{ .Error }}</p>
+            {{ end }}
+            <form action="/login" method="POST">
+                <input type="password" name="token" placeholder="Your auth token" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

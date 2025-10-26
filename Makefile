@@ -5,4 +5,4 @@ run: build
 	./bin/app
 
 run-front:
-	go run ./cmd/webFrontRouter
+	go run ./cmd/frontend

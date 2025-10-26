@@ -6,6 +6,7 @@ import (
 )
 
 func StartKemptAPI() {
+
 	router := gin.Default()
 	config := cors.Config{
 		AllowOrigins:     []string{"*"},
