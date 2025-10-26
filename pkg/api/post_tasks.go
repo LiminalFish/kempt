@@ -316,3 +316,69 @@ func post_tasks_ID_hidden(c *gin.Context) {
 
 	taskdb.AssignTaskHiddenStatus(targetTask.TaskID, changeHiddenStatus.HiddenStatus)
 }
+
+func post_tasks_ID_delete(c *gin.Context) {
+	permLevel := models.USER
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	taskIDInt, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	targetTask := taskdb.GetTask(taskIDInt)
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
+	taskdb.DeleteTask(targetTask.TaskID)
+}
+
+func post_tasks_create(c *gin.Context) {
+	permLevel := models.USER
+
+	type CreateTask struct {
+		Title string `json:"title"`
+	}
+
+	var taskCreate CreateTask
+
+	token := c.GetHeader("auth")
+
+	userPerm, err := auth(token)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	if userPerm > int(permLevel) {
+		log.Println("Not high enough permissions")
+		c.JSON(400, "Not high enough permissions")
+		return
+	}
+
+	if err := c.BindJSON(&taskCreate); err != nil {
+		log.Println(err.Error())
+		c.JSON(400, err.Error())
+		return
+	}
+
+	taskdb.CreateTask(taskCreate.Title)
+}
