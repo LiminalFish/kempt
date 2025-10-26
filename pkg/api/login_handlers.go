@@ -3,6 +3,7 @@ package api
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"github.com/LiminalFish/pkg/models"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -28,7 +29,7 @@ func HashString(input string) string {
 
 // takes user:pass and returns encrypted hash
 func login(c *gin.Context) {
-	pass := &LoginHeader{}
+	pass := &models.LoginHeader{}
 
 	err := c.ShouldBindHeader(pass)
 
