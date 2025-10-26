@@ -44,7 +44,7 @@
     document.getElementById('settings-btn').onclick = () => window.location.href = '/settings';
 
     const container = document.getElementById('task-details-container');
-    const AUTH_TOKEN = 'blueblueblue';
+    const AUTH_TOKEN = localStorage.getItem('AUTH_TOKEN');
 
     // Extract task ID from path /task/{id}
     function getTaskIdFromURL() {
