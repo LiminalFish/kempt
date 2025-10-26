@@ -8,7 +8,7 @@ type Task struct {
 	TaskID      int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	DueDate     string `json:"duedate"`
+	DueDate     int    `json:"duedate"`
 	Timeframe   string `json:"timeframe"`
 	Schedule    string `json:"schedule"`
 	Points      int    `json:"points"`
@@ -32,7 +32,8 @@ type Team struct {
 }
 
 type Action struct {
-	Type      string `json:"type"`
-	UserID    string `json:"userid"`
 	Timestamp int    `json:"timestamp"`
+	UserID    int    `json:"userid"`
+	TaskName  string `json:"taskname"`
+	Points    int    `json:"points"`
 }

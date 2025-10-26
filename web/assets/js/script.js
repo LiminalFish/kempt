@@ -3,6 +3,9 @@ const taskbar = document.getElementById('taskbar');
 document.getElementById('index-btn').addEventListener('click', () => {
   window.location.href = '/';
 });
+document.getElementById('completed-btn').addEventListener('click', () => {
+  window.location.href = '/completed';
+});
 // Redirect Scoreboard button
 document.getElementById('scoreboard-btn').addEventListener('click', () => {
   window.location.href = '/scoreboard';

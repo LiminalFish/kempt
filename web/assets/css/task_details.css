@@ -1,0 +1,60 @@
+#task-details-container {
+  margin-left: 320px;
+  padding: 20px;
+  font-family: "Courier New", monospace;
+  color: white;
+}
+
+.task-details-box {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 500px;
+}
+
+.task-details-box label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.task-details-box input[type="text"],
+.task-details-box input[type="date"],
+.task-details-box textarea,
+.task-details-box select {
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-family: "Courier New", monospace;
+}
+
+.task-details-box textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.task-details-box .buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.task-details-box button {
+  background: #3b0066;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Courier New", monospace;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.task-details-box button:hover {
+  background: #5c00a0;
+  transform: scale(1.05);
+}

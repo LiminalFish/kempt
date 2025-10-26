@@ -55,7 +55,7 @@ func TestTaskDatabase(t *testing.T) {
 	AssignTaskHiddenStatus(4, true)
 	AssignTaskDescription(1, "Handwash dishes and load dishwasher.")
 	AssignTaskPoints(1, 3)
-	AssignTaskDuedate(1, "tomorrow")
+	AssignTaskDuedate(1, 999999993)
 	AssignTaskTimeframe(1, "3pm-4pm")
 	AssignTaskTitle(1, "Wash and load dishwasher")
 	AssignTaskTriggers(1, 4)
