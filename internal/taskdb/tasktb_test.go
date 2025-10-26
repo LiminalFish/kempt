@@ -10,12 +10,12 @@ func TestTaskDatabase(t *testing.T) {
 	const dbFile = "../../data/task.db"
 	os.Remove(dbFile)
 
-	t.Cleanup(func() {
-		err := os.Remove(dbFile)
-		if err != nil {
-			t.Logf("Warning: failed to remove previous database: %v", err)
-		}
-	})
+	// t.Cleanup(func() {
+	// 	err := os.Remove(dbFile)
+	// 	if err != nil {
+	// 		t.Logf("Warning: failed to remove previous database: %v", err)
+	// 	}
+	// })
 
 	// ------- Testing InitDatabase Function -------
 
@@ -45,5 +45,24 @@ func TestTaskDatabase(t *testing.T) {
 	}
 	if table_name != "tasks" {
 		t.Errorf("Found table, but name was incorrect. Got '%s', expected 'tasks'", table_name)
+	}
+
+	CreateTask("Wash Dishes")
+	CreateTask("Clean Sink")
+	CreateTask("Do Laundry")
+	CreateTask("Put Away Dishes")
+
+	AssignTaskHiddenStatus(4, true)
+	AssignTaskDescription(1, "Handwash dishes and load dishwasher.")
+	AssignTaskPoints(1, 3)
+	AssignTaskDuedate(1, "tomorrow")
+	AssignTaskTimeframe(1, "3pm-4pm")
+	AssignTaskTitle(1, "Wash and load dishwasher")
+	AssignTaskTriggers(1, 4)
+
+	ids, _ := GetAllTaskIDS()
+
+	for _, id := range ids {
+		t.Logf("PASS: Got task: '%v'", GetTask(id))
 	}
 }
