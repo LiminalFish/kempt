@@ -35,6 +35,10 @@ func StartKemptAPI() {
 
 	router.POST("/users/:id/team", post_users_ID_team)
 
+	router.POST("/users/create", post_users_create)
+
+	router.POST("/users/:id/delete", post_users_ID_delete)
+
 	router.GET("/tasks", tasks)
 
 	router.GET("tasks/:id", get_tasks_ID)
