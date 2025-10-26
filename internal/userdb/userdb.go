@@ -8,7 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DIRECTORY = "../../data/user.db"
+const DIRECTORY = "./data/user.db"
 
 // initDB creates the local user database if it DOES NOT already exist.
 // The user database uses the key 'userid' as the primary.
