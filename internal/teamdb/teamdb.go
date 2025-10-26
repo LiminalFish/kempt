@@ -8,7 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DIRECTORY = "../../data/team.db"
+const DIRECTORY = "./data/team.db"
 
 func InitDatabase() {
 	db, err := sql.Open("sqlite3", DIRECTORY)
