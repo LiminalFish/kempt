@@ -43,20 +43,50 @@
     const container = document.getElementById('tasks-container');
     const loadingText = document.getElementById('loading-text');
 
+    // Hardcoded Auth Token
+    const AUTH_TOKEN = 'blueblueblue';
+
     // --- Load Tasks from API ---
+    // This is the correct ASYNC function
     async function loadTasks() {
       try {
-        const res = await fetch('/api/tasks');
-        if (!res.ok) throw new Error('Failed to fetch tasks');
-        const tasks = await res.json();
+        // 1. Fetch the list of task IDs with the auth header
+        const res = await fetch('http://127.0.0.1:8081/tasks', {
+          headers: {
+            'auth': AUTH_TOKEN
+          }
+        });
+        if (!res.ok) throw new Error('Failed to fetch task list');
+        
+        // We expect an object like { "taskIDs": [1, 2, 3] }
+        const response = await res.json();  // Get the object
+        const taskIds = response.taskIDs;   // Get the array *inside* the object
+
         loadingText.remove();
 
-        if (!tasks.length) {
+        if (!taskIds.length) {
           container.innerHTML = `<p style="color:white;">No tasks available.</p>`;
           return;
         }
 
-        // Render tasks
+        // 2. Create an array of promises, one for each ID, also with auth header
+        // This is the correct way to handle multiple fetches
+        const taskPromises = taskIds.map(id => {
+          return fetch(`http://127.0.0.1:8081/tasks/${id}`, {
+            headers: {
+              'auth': AUTH_TOKEN
+            }
+          })
+            .then(res => {
+              if (!res.ok) throw new Error(`Failed to fetch task ${id}`);
+              return res.json();
+            });
+        });
+
+        // 3. Wait for all promises to resolve
+        const tasks = await Promise.all(taskPromises);
+
+        // 4. Now we can safely render each one
         tasks.forEach(task => {
           const div = document.createElement('div');
           div.className = "task-item";
@@ -77,12 +107,13 @@
 
       } catch (err) {
         console.error(err);
+        if (loadingText) loadingText.remove();
         container.innerHTML = `<p style="color:red;">Error loading tasks.</p>`;
       }
     }
 
     // --- Handle Clicks ---
-    container.addEventListener('click', (e) => {
+    container.addEventListener('click', async (e) => { // This is also async
       const taskItem = e.target.closest('.task-item');
       if (!taskItem) return;
 
@@ -90,7 +121,23 @@
 
       // If user clicked "Complete"
       if (e.target.classList.contains('complete-btn')) {
-        taskItem.remove();
+        try {
+          const res = await fetch(`http://127.0.0.1:8081/tasks/${taskId}/delete`, {
+            method: 'POST', 
+            headers: {
+              'auth': AUTH_TOKEN
+            }
+          });
+
+          if (!res.ok) {
+            throw new Error('Failed to complete task on server');
+          }
+
+          taskItem.remove();
+        } catch (err) {
+          console.error(err);
+          alert('Error: Could not complete task.');
+        }
         return;
       }
 
