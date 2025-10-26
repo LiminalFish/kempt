@@ -39,12 +39,6 @@ func post_users_ID_name(c *gin.Context) {
 
 	targetUser := userdb.GetUser(userIDInt)
 
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(400, err.Error())
-		return
-	}
-
 	if userPerm > int(permLevel) || token != targetUser.Token {
 		log.Println("Not high enough permissions")
 		c.JSON(400, "Not high enough permissions")
@@ -90,12 +84,6 @@ func post_users_ID_points(c *gin.Context) {
 
 	targetUser := userdb.GetUser(userIDInt)
 
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(400, err.Error())
-		return
-	}
-
 	if userPerm > int(permLevel) {
 		log.Println("Not high enough permissions")
 		c.JSON(400, "Not high enough permissions")
@@ -140,12 +128,6 @@ func post_users_ID_type(c *gin.Context) {
 	}
 
 	targetUser := userdb.GetUser(userIDInt)
-
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(400, err.Error())
-		return
-	}
 
 	if userPerm > int(permLevel) {
 		log.Println("Not high enough permissions")
@@ -193,12 +175,6 @@ func post_users_ID_rank(c *gin.Context) {
 
 	targetUser := userdb.GetUser(userIDInt)
 
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(400, err.Error())
-		return
-	}
-
 	if userPerm > int(permLevel) {
 		log.Println("Not high enough permissions")
 		c.JSON(400, "Not high enough permissions")
@@ -244,12 +220,6 @@ func post_users_ID_team(c *gin.Context) {
 	}
 
 	targetUser := userdb.GetUser(userIDInt)
-
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(400, err.Error())
-		return
-	}
 
 	if userPerm > int(permLevel) {
 		log.Println("Not high enough permissions")
