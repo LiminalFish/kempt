@@ -323,3 +323,5 @@ func AssignUserTeamid(userid int, teamid int) {
 		return
 	}
 }
+
+func GetAllUsers() {}
