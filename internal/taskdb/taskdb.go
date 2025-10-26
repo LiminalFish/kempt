@@ -23,7 +23,7 @@ func InitDatabase() {
 		taskid INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 		title TEXT NOT NULL,
 		description TEXT DEFAULT "",
-		duedate TEXT DEFAULT "",
+		duedate INTEGER,
 		timeframe TEXT DEFAULT "",
 		schedule TEXT DEFAULT "",
 		points INTEGER DEFAULT 0,
@@ -43,7 +43,6 @@ func CreateTask(title string) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -64,7 +63,6 @@ func DeleteTask(taskid int) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -84,7 +82,6 @@ func GetTaskTitle(taskid int) (string, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return "", err
 	}
 	defer db.Close()
@@ -106,7 +103,6 @@ func AssignTaskTitle(taskid int, title string) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -127,7 +123,6 @@ func GetTaskDescription(taskid int) (string, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return "", err
 	}
 	defer db.Close()
@@ -149,7 +144,6 @@ func AssignTaskDescription(taskid int, description string) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -166,12 +160,11 @@ func AssignTaskDescription(taskid int, description string) {
 	}
 }
 
-func GetTaskDuedate(taskid int) (string, error) {
+func GetTaskDuedate(taskid int) (int, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
-		return "", err
+		return -1, err
 	}
 	defer db.Close()
 
@@ -179,20 +172,22 @@ func GetTaskDuedate(taskid int) (string, error) {
 	SELECT duedate FROM tasks WHERE taskid = ?
 	`
 
-	var duedate string
+	var duedate sql.NullInt64
 	err = db.QueryRow(retrieve_duedate_sql, taskid).Scan(&duedate)
 	if err != nil {
 		log.Printf("%q: %s\n", err, retrieve_duedate_sql)
-		return "", err
+		return -1, err
 	}
-	return duedate, nil
+	if !duedate.Valid {
+		return -1, nil
+	}
+	return int(duedate.Int64), nil
 }
 
-func AssignTaskDuedate(taskid int, duedate string) {
+func AssignTaskDuedate(taskid int, duedate int) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -213,7 +208,6 @@ func GetTaskTimeframe(taskid int) (string, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return "", err
 	}
 	defer db.Close()
@@ -235,7 +229,6 @@ func AssignTaskTimeframe(taskid int, timeframe string) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -256,7 +249,6 @@ func GetTaskPoints(taskid int) (int, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return -1, err
 	}
 	defer db.Close()
@@ -278,7 +270,6 @@ func AssignTaskPoints(taskid int, points int) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -299,7 +290,6 @@ func GetTaskTriggers(taskid int) (int, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return -1, err
 	}
 	defer db.Close()
@@ -321,7 +311,6 @@ func AssignTaskTriggers(taskid int, triggers int) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -342,7 +331,6 @@ func GetTaskHiddenStatus(taskid int) (bool, error) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return false, err
 	}
 	defer db.Close()
@@ -364,7 +352,6 @@ func AssignTaskHiddenStatus(taskid int, hidden bool) {
 	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return
 	}
 	defer db.Close()
@@ -402,7 +389,6 @@ func GetAllTaskIDS() ([]int, error) {
 	var tasks []int
 	if err != nil {
 		log.Println(err)
-		db.Close()
 		return tasks, err
 	}
 	defer db.Close()
