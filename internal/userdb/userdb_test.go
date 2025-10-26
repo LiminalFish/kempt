@@ -164,6 +164,17 @@ func TestUserDatabase(t *testing.T) {
 	}
 	t.Logf("Pass: Team successfully updated. Got: '%v' from user 3", teamid)
 
-	// ------- Testing DeleteUser Functions -------
+	// ------- Testing DeleteUser Function -------
 	DeleteUser(2)
+
+	// ------- Testing GetAllUsers Function -------
+	ids, err := GetAllUsers()
+	if err != nil {
+		t.Fatalf("Failed to get all users: '%v'", err)
+	}
+	t.Logf("Pass: Successfully got all user IDS: '%v'", ids)
+
+	// ------- Testing GetUser Function -------
+	user1 := GetUser(1)
+	t.Logf("Pass: Got user1: '%v'", user1)
 }
