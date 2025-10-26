@@ -10,12 +10,12 @@ func TestUserDatabase(t *testing.T) {
 	const dbFile = "../../data/user.db"
 	os.Remove(dbFile)
 
-	t.Cleanup(func() {
-		err := os.Remove(dbFile)
-		if err != nil {
-			t.Logf("Warning: failed to remove previous database: %v", err)
-		}
-	})
+	// t.Cleanup(func() {
+	// 	err := os.Remove(dbFile)
+	// 	if err != nil {
+	// 		t.Logf("Warning: failed to remove previous database: %v", err)
+	// 	}
+	// })
 
 	// ------- Testing InitDatabase Function -------
 

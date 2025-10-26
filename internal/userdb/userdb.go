@@ -7,12 +7,14 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const DIRECTORY = "./data/user.db"
+
 // initDB creates the local user database if it DOES NOT already exist.
 // The user database uses the key 'userid' as the primary.
 func InitDatabase() {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	defer db.Close()
 
@@ -30,7 +32,7 @@ func InitDatabase() {
 
 	_, err = db.Exec(create_user_db)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, create_user_db)
+		log.Printf("%q: %s\n", err, create_user_db)
 		return
 	}
 }
@@ -39,9 +41,9 @@ func InitDatabase() {
 // Teams, points, rank can be added later.
 // 'userid' is automatically created by database
 func CreateUser(name string, userType int, token string) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -54,15 +56,15 @@ func CreateUser(name string, userType int, token string) {
 
 	_, err = db.Exec(insert_user_sql, name, userType, token)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, insert_user_sql)
+		log.Printf("%q: %s\n", err, insert_user_sql)
 		return
 	}
 }
 
 func DeleteUser(userid int) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -74,16 +76,16 @@ func DeleteUser(userid int) {
 
 	_, err = db.Exec(delete_user_sql, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, delete_user_sql)
+		log.Printf("%q: %s\n", err, delete_user_sql)
 		return
 	}
 }
 
 // Retrieves name from specified userid
 func GetUserName(userid int) (string, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return "", err
 	}
@@ -95,7 +97,7 @@ func GetUserName(userid int) (string, error) {
 	var name string
 	err = db.QueryRow(retrieve_name_sql, userid).Scan(&name)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_name_sql)
+		log.Printf("%q: %s\n", err, retrieve_name_sql)
 		return "", err
 	}
 	return name, nil
@@ -103,9 +105,9 @@ func GetUserName(userid int) (string, error) {
 
 // Assign a new name to a specified userid.
 func AssignUserName(userid int, name string) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -118,16 +120,16 @@ func AssignUserName(userid int, name string) {
 
 	_, err = db.Exec(update_name_sql, name, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, update_name_sql)
+		log.Printf("%q: %s\n", err, update_name_sql)
 		return
 	}
 }
 
 // Retrieves user's admin level from specified userid
 func GetUserType(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return -1, err
 	}
@@ -140,7 +142,7 @@ func GetUserType(userid int) (int, error) {
 	var usertype int
 	err = db.QueryRow(retrieve_type_sql, userid).Scan(&usertype)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_type_sql)
+		log.Printf("%q: %s\n", err, retrieve_type_sql)
 		return -1, err
 	}
 	return usertype, nil
@@ -148,9 +150,9 @@ func GetUserType(userid int) (int, error) {
 
 // Assign a new admin level to a specified userid.
 func AssignUserType(userid int, usertype int) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -163,16 +165,16 @@ func AssignUserType(userid int, usertype int) {
 
 	_, err = db.Exec(update_type_sql, usertype, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, update_type_sql)
+		log.Printf("%q: %s\n", err, update_type_sql)
 		return
 	}
 }
 
 // Retrieves total points from specified userid
 func GetUserPoints(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return -1, err
 	}
@@ -184,7 +186,7 @@ func GetUserPoints(userid int) (int, error) {
 	var points int
 	err = db.QueryRow(retrieve_points_sql, userid).Scan(&points)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_points_sql)
+		log.Printf("%q: %s\n", err, retrieve_points_sql)
 		return -1, err
 	}
 	return points, nil
@@ -192,9 +194,9 @@ func GetUserPoints(userid int) (int, error) {
 
 // Assign a new value of points to a specified userid.
 func AssignUserPoints(userid int, points int) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -207,16 +209,16 @@ func AssignUserPoints(userid int, points int) {
 
 	_, err = db.Exec(update_points_sql, points, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, update_points_sql)
+		log.Printf("%q: %s\n", err, update_points_sql)
 		return
 	}
 }
 
 // Retrieves user rank from specified userid
 func GetUserRank(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return -1, err
 	}
@@ -228,7 +230,7 @@ func GetUserRank(userid int) (int, error) {
 	var rank int
 	err = db.QueryRow(retrieve_rank_sql, userid).Scan(&rank)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_rank_sql)
+		log.Printf("%q: %s\n", err, retrieve_rank_sql)
 		return -1, err
 	}
 	return rank, nil
@@ -236,9 +238,9 @@ func GetUserRank(userid int) (int, error) {
 
 // Assign a new rank to a specified userid.
 func AssignUserRank(userid int, rank int) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -251,16 +253,16 @@ func AssignUserRank(userid int, rank int) {
 
 	_, err = db.Exec(update_rank_sql, rank, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, update_rank_sql)
+		log.Printf("%q: %s\n", err, update_rank_sql)
 		return
 	}
 }
 
 // Retrieves user API key/token from specified userid
 func GetUserToken(userid int) (string, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return "", err
 	}
@@ -272,7 +274,7 @@ func GetUserToken(userid int) (string, error) {
 	var token string
 	err = db.QueryRow(retrieve_token_sql, userid).Scan(&token)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_token_sql)
+		log.Printf("%q: %s\n", err, retrieve_token_sql)
 		return "", err
 	}
 	return token, nil
@@ -280,9 +282,9 @@ func GetUserToken(userid int) (string, error) {
 
 // Retrieves teamid from specified userid.
 func GetUserTeamid(userid int) (int, error) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return -1, err
 	}
@@ -294,7 +296,7 @@ func GetUserTeamid(userid int) (int, error) {
 	var teamid int
 	err = db.QueryRow(retrieve_team_sql, userid).Scan(&teamid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, retrieve_team_sql)
+		log.Printf("%q: %s\n", err, retrieve_team_sql)
 		return -1, err
 	}
 	return teamid, nil
@@ -302,9 +304,9 @@ func GetUserTeamid(userid int) (int, error) {
 
 // Assign a teamid to a specified userid.
 func AssignUserTeamid(userid int, teamid int) {
-	db, err := sql.Open("sqlite3", "../../data/user.db")
+	db, err := sql.Open("sqlite3", DIRECTORY)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		db.Close()
 		return
 	}
@@ -317,7 +319,7 @@ func AssignUserTeamid(userid int, teamid int) {
 
 	_, err = db.Exec(update_team_sql, teamid, userid)
 	if err != nil {
-		log.Fatalf("%q: %s\n", err, update_team_sql)
+		log.Printf("%q: %s\n", err, update_team_sql)
 		return
 	}
 }
