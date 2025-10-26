@@ -65,4 +65,12 @@ func TestTaskDatabase(t *testing.T) {
 	for _, id := range ids {
 		t.Logf("PASS: Got task: '%v'", GetTask(id))
 	}
+
+	DeleteTask(2)
+
+	ids, _ = GetAllTaskIDS()
+
+	for _, id := range ids {
+		t.Logf("PASS: Got task: '%v'", GetTask(id))
+	}
 }
