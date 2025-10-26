@@ -43,29 +43,29 @@ func StartKemptAPI() {
 
 	router.GET("tasks/:id/description", get_tasks_ID_description)
 
-	router.GET("tasks/:id/duedate")
+	router.GET("tasks/:id/duedate", get_tasks_ID_duedate)
 
-	router.GET("tasks/:id/timeframe")
+	router.GET("tasks/:id/timeframe", get_tasks_ID_timeframe)
 
-	router.GET("tasks/:id/points")
+	router.GET("tasks/:id/points", get_tasks_ID_points)
 
-	router.GET("tasks/:id/triggers")
+	router.GET("tasks/:id/triggers", get_tasks_ID_triggers)
 
-	router.GET("tasks/:id/hidden")
+	router.GET("tasks/:id/hidden", get_tasks_ID_hidden)
 
-	router.POST("tasks/:id/title")
+	router.POST("tasks/:id/title", post_tasks_ID_title)
 
-	router.POST("tasks/:id/description")
+	router.POST("tasks/:id/description", post_tasks_ID_description)
 
-	router.POST("tasks/:id/duedate")
+	router.POST("tasks/:id/duedate", post_tasks_ID_duedate)
 
-	router.POST("tasks/:id/timeframe")
+	router.POST("tasks/:id/timeframe", post_tasks_ID_timeframe)
 
-	router.POST("tasks/:id/points")
+	router.POST("tasks/:id/points", post_tasks_ID_points)
 
-	router.POST("tasks/:id/triggers")
+	router.POST("tasks/:id/triggers", post_tasks_ID_triggers)
 
-	router.POST("tasks/:id/hidden")
+	router.POST("tasks/:id/hidden", post_tasks_ID_hidden)
 
 	router.Run(":8081")
 }
