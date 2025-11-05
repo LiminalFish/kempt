@@ -1,10 +1,11 @@
-# kempt
+# Kempt
 
-Tool for scheduling and keeping track of tasks
+Kempt Server
 
-# Features
+# What
 
-* Users
-* Points
-* Task triggering (Completing one task can trigger the creation of another)
-* Ability to assign tasks to users
+# Featues
+
+# Front end
+
+Will be created at a later date.
